@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pii">
    <application
-        android:label="pii"
+        android:label="HealthCard"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
