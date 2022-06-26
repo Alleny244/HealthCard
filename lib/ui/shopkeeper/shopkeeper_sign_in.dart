@@ -13,6 +13,7 @@ class _ShopkeeperSignInState extends State<ShopkeeperSignIn> {
 
   String email = " ";
   String pswd = " ";
+
   String errorEmail = " ";
   String errorPass = " ";
   String displayMsg = " ";
@@ -61,7 +62,7 @@ class _ShopkeeperSignInState extends State<ShopkeeperSignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Shopkeeper login"),
+        title: Text("Doctor login"),
         centerTitle: true,
       ),
       body: SafeArea(

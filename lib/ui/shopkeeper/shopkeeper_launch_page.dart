@@ -10,7 +10,7 @@ class ShopkeeperLaunchPage extends StatefulWidget {
 
 class _ShopkeeperLaunchPageState extends State<ShopkeeperLaunchPage> {
   void customerReg() {
-    Navigator.pushNamed(context, '/customerRegister');
+    Navigator.pushNamed(context, '/shopkeeperRegister');
   }
 
   @override

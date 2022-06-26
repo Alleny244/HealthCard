@@ -52,7 +52,7 @@ class _SelectUserTypeState extends State<SelectUserType>
           tabs: [
             Tab(
               child: Text(
-                "Doctor",
+                "Patient",
                 style: TextStyle(
                   fontSize: 18,
                 ),
@@ -60,7 +60,7 @@ class _SelectUserTypeState extends State<SelectUserType>
             ),
             Tab(
               child: Text(
-                "Patient",
+                "Doctor",
                 style: TextStyle(
                   fontSize: 18,
                 ),

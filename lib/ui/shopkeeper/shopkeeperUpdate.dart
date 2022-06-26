@@ -73,7 +73,7 @@ class _ShopkeeperUpdateState extends State<ShopkeeperUpdate> {
         'shopkeeperName': shopkeeperName,
         'address': address,
         'imageUrl': u,
-        'vaccine': vaccine,
+        // 'vaccine': vaccine,
       }).then((value) => print("added"));
     }
 
@@ -170,28 +170,28 @@ class _ShopkeeperUpdateState extends State<ShopkeeperUpdate> {
                     children: [
                       TextField(
                         decoration: InputDecoration(
-                          hintText: "Shop Name",
+                          hintText: "Doctor Name",
                         ),
                         controller: shopNameC..text = sN,
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          hintText: "Name",
+                          hintText: "Hospital Name",
                         ),
                         controller: shopkeeperNameC..text = skName,
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          hintText: "Address",
+                          hintText: "Specialisation",
                         ),
                         controller: addressC..text = a,
                       ),
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: "Vaccine Status",
-                        ),
-                        controller: vaccineC..text = v,
-                      ),
+                      // TextField(
+                      //   decoration: InputDecoration(
+                      //     hintText: "Vaccine Status",
+                      //   ),
+                      //   controller: vaccineC..text = v,
+                      // ),
                       ElevatedButton(
                         onPressed: imageUpload,
                         child: Text("Upload photo"),

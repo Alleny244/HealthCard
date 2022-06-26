@@ -228,7 +228,7 @@ class _ShopkeeperGoogleHomePageState extends State<ShopkeeperGoogleHomePage> {
             ))
         : Scaffold(
             appBar: AppBar(
-              title: Text("ShopKeeper page"),
+              title: Text("Doctor page"),
               centerTitle: true,
             ),
             drawer: Drawer(

@@ -11,7 +11,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:barcode_scan_fix/barcode_scan.dart';
 import './visited_shops.dart';
-
+import 'package:intl/intl.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -130,59 +130,59 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     });
   }
 
-  void imageUpload() async {
-    var url;
-    final _pickr = ImagePicker();
-    PickedFile image;
-//handle permission
-    var permissionstatus = await Permission.photos.request();
-    if (permissionstatus.isGranted) {
-      image = await _pickr.getImage(source: ImageSource.gallery);
-      var file = File(image.path);
-      if (image != null) {
-        // FirebaseStorage.instance.ref('customer/$uid').putFile(file);
-        // var url = await FirebaseStorage.instance
-        //     .ref('customer/$uid')
-        //     .getDownloadURL();
+//   void imageUpload() async {
+//     var url;
+//     final _pickr = ImagePicker();
+//     PickedFile image;
+// //handle permission
+//     var permissionstatus = await Permission.photos.request();
+//     if (permissionstatus.isGranted) {
+//       image = await _pickr.getImage(source: ImageSource.gallery);
+//       var file = File(image.path);
+//       if (image != null) {
+//         // FirebaseStorage.instance.ref('customer/$uid').putFile(file);
+//         // var url = await FirebaseStorage.instance
+//         //     .ref('customer/$uid')
+//         //     .getDownloadURL();
 
-        // var snapshots =
-        //     _storage.ref().child('customers/$uid').putFile(file).snapshot;
-        // url = await snapshots.ref.getDownloadURL();
+//         // var snapshots =
+//         //     _storage.ref().child('customers/$uid').putFile(file).snapshot;
+//         // url = await snapshots.ref.getDownloadURL();
 
-        Reference reference =
-            FirebaseStorage.instance.ref().child('Customer/').child(uid);
-        UploadTask uploadTask = reference.putFile(file);
-        await uploadTask.whenComplete(() async {
-          url = await uploadTask.snapshot.ref.getDownloadURL();
-        });
+//         Reference reference =
+//             FirebaseStorage.instance.ref().child('Customer/').child(uid);
+//         UploadTask uploadTask = reference.putFile(file);
+//         await uploadTask.whenComplete(() async {
+//           url = await uploadTask.snapshot.ref.getDownloadURL();
+//         });
 
-   
-        print(url);
-        i = url;
-        print(i);
-        print("image added");
+//         print(url);
+//         i = url;
+//         print(i);
+//         print("image added");
 
-        //   Fluttertoast.showToast(
-        //       msg: "Upload Complete",
-        //       toastLength: Toast.LENGTH_SHORT,
-        //       gravity: ToastGravity.CENTER,
-        //       timeInSecForIosWeb: 1,
-        //       backgroundColor: Colors.grey[400],
-        //       textColor: Colors.white,
-        //       fontSize: 16.0);
-      }
-    } else {
-      print("Grant permission");
-    }
-//select image
-// upload to storage
-  }
-
+//         //   Fluttertoast.showToast(
+//         //       msg: "Upload Complete",
+//         //       toastLength: Toast.LENGTH_SHORT,
+//         //       gravity: ToastGravity.CENTER,
+//         //       timeInSecForIosWeb: 1,
+//         //       backgroundColor: Colors.grey[400],
+//         //       textColor: Colors.white,
+//         //       fontSize: 16.0);
+//       }
+//     } else {
+//       print("Grant permission");
+//     }
+// //select image
+// // upload to storage
+//   }
+  var visitedStoresList;
   @override
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser;
     uid = userId.uid;
+    print('X${uid}');
 
     firestore
         .collection("users")
@@ -205,6 +205,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           vaccine = datas['vaccine'];
           dataFilled = true;
           print("Details$imageUrl   $name    $address     $vaccine");
+          getVisitedStoresInfo();
         });
       } else {
         setState(() {
@@ -215,11 +216,32 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     });
   }
 
+  Future getVisitedStoresInfo() async {
+    Map customerData;
+
+    var customerUid = FirebaseAuth.instance.currentUser.uid;
+    print(" d ${customerUid}");
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(customerUid)
+        .get();
+    customerData = documentSnapshot.data();
+    print("aaa ${customerData}");
+
+    print("hello");
+    print(customerData['record'][0].toString());
+    visitedStoresList = customerData['record'];
+
+    visitedStoresList.forEach((visitedStore) async {
+      print("the element is " + visitedStore.toString());
+    });
+  }
+
   Widget build(BuildContext context) {
     return (!dataFilled)
         ? Scaffold(
             appBar: AppBar(
-              title: Text("Customer page"),
+              title: Text("Patient page"),
               centerTitle: true,
             ),
             body: SafeArea(
@@ -243,28 +265,20 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          hintText: "Vaccine Status",
+                          hintText: "Patient Id",
                         ),
                         controller: vaccineC,
                       ),
-                      ElevatedButton(
-                        onPressed: imageUpload,
-                        child: Text("Upload photo"),
-                      ),
+                      // ElevatedButton(
+                      //   onPressed: imageUpload,
+                      //   child: Text("Upload photo"),
+                      // ),
                       ElevatedButton(
                         onPressed: add,
                         child: Text("Add"),
                       ),
                       SizedBox(
                         height: 30,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          customerSignout();
-                          Navigator.pushReplacementNamed(
-                              context, '/registration');
-                        },
-                        child: Text("logout"),
                       ),
                     ],
                   ),
@@ -274,7 +288,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text("Customer page"),
+              title: Text("Patient page"),
               centerTitle: true,
             ),
             drawer: Drawer(
@@ -283,10 +297,10 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   UserAccountsDrawerHeader(
                     accountName: Text(name),
                     accountEmail: Text(email),
-                    currentAccountPicture: CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(imageUrl),
-                    ),
+                    // currentAccountPicture: CircleAvatar(
+                    //   radius: 40,
+                    //   backgroundImage: NetworkImage(imageUrl),
+                    // ),
                   ),
                   ListTile(
                     leading: Icon(Icons.list_rounded),
@@ -323,40 +337,93 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               child: Column(
                 children: [
                   SizedBox(height: 20),
-                  CircleAvatar(
-                    radius: 80,
-                    backgroundImage: NetworkImage(imageUrl),
-                  ),
+                  // CircleAvatar(
+                  //   radius: 80,
+                  //   backgroundImage: NetworkImage(imageUrl),
+                  // ),
                   SizedBox(height: 20),
                   ListTile(
                     tileColor: Colors.grey[100],
-                    title: Text("Name"),
-                    subtitle: Text(name),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text("Email"),
-                    subtitle: Text(email),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text("Adress"),
-                    subtitle: Text(address),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text("Vaccine Status"),
-                    subtitle: Text(vaccine),
+                    title: Text("Name",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    subtitle: Text(name,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(height: 30),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.camera_alt),
-                    label: Text("Scan QR"),
-                    onPressed: scan,
+                  SingleChildScrollView(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      child: ListView(
+                        children: visitedStoresList.map<Widget>((e) {
+                          return Container(
+                            height: 160,
+                            decoration: BoxDecoration(
+                              color: Colors.blue[100],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            margin: EdgeInsets.all(15),
+                            padding: EdgeInsets.all(15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.55,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "Hospital Name : ${e['hname']}",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 15),
+                                        Text(
+                                          "Doctor Name: ${e['dname']}",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 15),
+                                        Text(
+                                          "Disease: ${e['disease']}",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 15),
+                                        Text(
+                                          "Time: " +
+                                              DateFormat.MMMd().add_jm().format(
+                                                  DateTime.parse(e['date']
+                                                      .toDate()
+                                                      .toString())),
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
+
+                  SizedBox(height: 30),
+                  // ElevatedButton.icon(
+                  //   icon: Icon(Icons.camera_alt),
+                  //   label: Text("Scan QR"),
+                  //   onPressed: scan,
+                  // ),
                 ],
               ),
             ),

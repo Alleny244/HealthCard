@@ -21,6 +21,7 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
   TextEditingController shopkeeperNameC = TextEditingController();
   TextEditingController addressC = TextEditingController();
   TextEditingController vaccineC = TextEditingController();
+  TextEditingController pidC = TextEditingController();
   Map datas = {};
   String email, uid;
   String shopName, shopkeeperName, address, vaccine;
@@ -29,7 +30,7 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
   int check = 0;
   String i = "";
   bool dataExists = false, imageExists = false, imageLoading = false;
-
+  String pid = "";
   void add() {
     shopName = shopNameC.text.toString();
     shopkeeperName = shopkeeperNameC.text.toString();
@@ -42,7 +43,6 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
       'shopkeeperName': shopkeeperName,
       'address': address,
       'imageUrl': i,
-      'vaccine': vaccine,
     }).then((value) => print("added"));
 
     firestore
@@ -68,6 +68,35 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
         });
       }
     });
+  }
+
+  void patientDetail() async {
+    String vaccine = pidC.text.toString();
+    String x = "";
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('vaccine', isEqualTo: vaccine)
+        .get()
+        .then((querySnapshot) {
+      print(querySnapshot.docs[0].reference.id);
+      firestore
+          .collection("users")
+          .doc(querySnapshot.docs[0].reference.id)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          datas = documentSnapshot.data();
+          print(datas['name']);
+          Navigator.pushNamed(context, '/addPatient', arguments: {
+            'datas': datas,
+            'id': querySnapshot.docs[0].reference.id,
+          });
+        } else {
+          print("No patient");
+        }
+      });
+    });
+    print("idss is ${x}");
   }
 
   void imageUpload() async {
@@ -140,7 +169,7 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
     return (!dataExists)
         ? Scaffold(
             appBar: AppBar(
-              title: Text("Shopkeeper Page"),
+              title: Text("Doctor Page"),
               centerTitle: true,
             ),
             body: SafeArea(
@@ -152,27 +181,21 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
                     children: <Widget>[
                       TextField(
                         decoration: InputDecoration(
-                          labelText: "Shop Name",
+                          labelText: "Doctor Name",
                         ),
                         controller: shopNameC,
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          labelText: "Shopkeeper Name",
+                          labelText: "Hospital Name",
                         ),
                         controller: shopkeeperNameC,
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          labelText: "Address",
+                          labelText: "Specialisation",
                         ),
                         controller: addressC,
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Vaccine Status",
-                        ),
-                        controller: vaccineC,
                       ),
                       ElevatedButton(
                         onPressed: imageUpload,
@@ -199,7 +222,7 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
             ))
         : Scaffold(
             appBar: AppBar(
-              title: Text("ShopKeeper page"),
+              title: Text("Doctor page"),
               centerTitle: true,
             ),
             drawer: Drawer(
@@ -271,7 +294,7 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
                   SizedBox(height: 20),
                   ListTile(
                     tileColor: Colors.grey[100],
-                    title: Text("Shop Name"),
+                    title: Text("Name"),
                     subtitle: Text(shopName),
                   ),
                   // SizedBox(height: 10),
@@ -283,20 +306,32 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
                   SizedBox(height: 10),
                   ListTile(
                     tileColor: Colors.grey[100],
-                    title: Text("Adress"),
+                    title: Text("Specialisation"),
                     subtitle: Text(address),
                   ),
                   SizedBox(height: 10),
-                  ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text("Vaccine Status"),
-                    subtitle: Text(vaccine),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text("Shopkeeper Name"),
-                    subtitle: Text(shopkeeperName),
+                  // ListTile(
+                  //   tileColor: Colors.grey[100],
+                  //   title: Text("Vaccine Status"),
+                  //   subtitle: Text(vaccine),
+                  // ),
+                  // SizedBox(height: 10),
+                  // ListTile(
+                  //   tileColor: Colors.grey[100],
+                  //   title: Text("Shopkeeper Name"),
+                  //   subtitle: Text(shopkeeperName),
+                  // ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 230,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: "Patient Id",
+                        // errorText: errorEmail == " " ? null : '$errorEmail',
+                        hintText: "xxxxx",
+                      ),
+                      controller: pidC,
+                    ),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton.icon(
@@ -307,12 +342,13 @@ class _ShopkeeperHomePageState extends State<ShopkeeperHomePage> {
                       borderRadius: BorderRadius.circular(18.0),
                     ))),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/qrGenerator', arguments: {
-                        'uid': uid,
-                      });
+                      // Navigator.pushNamed(context, '/qrGenerator', arguments: {
+                      //   'uid': uid,
+                      // });
+                      patientDetail();
                     },
-                    icon: Icon(Icons.qr_code_outlined),
-                    label: Text("Generate QR"),
+                    icon: Icon(Icons.search),
+                    label: Text("Search"),
                   ),
                   SizedBox(height: 20),
                 ],

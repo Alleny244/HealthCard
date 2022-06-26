@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pii/ui/customer/customerUpdate.dart';
+import 'package:pii/ui/shopkeeper/record.dart';
 import 'package:pii/ui/shopkeeper/shopkeeperUpdate.dart';
+import 'package:pii/ui/shopkeeper/shopkeeper_signUp.dart';
+import 'package:pii/ui/shopkeeper/shopkeeperadd.dart';
 import './qr/qrGenerator.dart';
 import 'ui/customer/customer_sign_in.dart';
 import './ui/user_register.dart';
@@ -32,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         // page route for login/registration page
         '/selectUserType': (context) => SelectUserType(),
         '/customerRegister': (context) => UserRegister(),
-        '/shopkeeperRegister': (context) => UserRegister(),
+        '/shopkeeperRegister': (context) => ShopRegister(),
         '/customerSignIn': (context) => CustomerSignIn(),
         '/shopkeeperSignIn': (context) => ShopkeeperSignIn(),
         '/customerHomePage': (context) => CustomerHomePage(),
@@ -43,6 +46,8 @@ class _MyAppState extends State<MyApp> {
         '/qrGenerator': (context) => QrGenerator(),
         '/customerUpdate': (context) => CustomerUpdate(),
         '/shopkeeperUpdate': (context) => ShopkeeperUpdate(),
+        '/addPatient': (context) => AddPatient(),
+        '/record': (context) => Record(),
       },
     );
   }

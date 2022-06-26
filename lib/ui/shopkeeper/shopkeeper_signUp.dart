@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
-import '../flutterfire/auth.dart';
+import '../../flutterfire/auth.dart';
 
-class UserRegister extends StatefulWidget {
+class ShopRegister extends StatefulWidget {
   @override
-  _UserRegisterState createState() => _UserRegisterState();
+  _ShopRegisterState createState() => _ShopRegisterState();
 }
 
-class _UserRegisterState extends State<UserRegister> {
+class _ShopRegisterState extends State<ShopRegister> {
   TextEditingController emailC = TextEditingController();
   TextEditingController pswdC = TextEditingController();
   TextEditingController cpswdC = TextEditingController();
-
+  TextEditingController regC = TextEditingController();
   String email = "";
   String pswd = "";
   String cpswd = "";
   String errorcpswd = "";
   String errorEmail = "";
   String displayMsg = "";
-
+  String reg = " ";
+  String errorReg = " ";
   void register() async {
     email = emailC.text.toString();
     pswd = pswdC.text.toString();
     cpswd = cpswdC.text.toString();
+    reg = regC.text.toString();
     if (pswd.isEmpty || cpswd.isEmpty)
       setState(() {
         errorcpswd = "Password cannot be empty";
@@ -45,7 +47,17 @@ class _UserRegisterState extends State<UserRegister> {
       });
     }
 
-    if (errorEmail == "" && errorcpswd == "") {
+    if (reg == "") {
+      setState(() {
+        errorReg = "Please provide Registration Number";
+      });
+    } else {
+      setState(() {
+        errorReg = "";
+      });
+    }
+
+    if (errorEmail == "" && errorcpswd == "" && errorReg == "") {
       displayMsg = await userRegistration(email, pswd);
       setState(() {
         if (displayMsg == "") {
@@ -63,7 +75,7 @@ class _UserRegisterState extends State<UserRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Patient registration"),
+        title: Text("Doctor registration"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -82,6 +94,14 @@ class _UserRegisterState extends State<UserRegister> {
                     hintText: "something@email.com",
                   ),
                   controller: emailC,
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "NMC Registration Number",
+                    // errorText: errorReg == " " ? null : '$errorReg',
+                    hintText: "xxxxx",
+                  ),
+                  controller: regC,
                 ),
                 TextField(
                   decoration: InputDecoration(

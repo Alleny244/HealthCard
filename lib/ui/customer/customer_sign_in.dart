@@ -60,7 +60,7 @@ class _CustomerSignInState extends State<CustomerSignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Customer login"),
+        title: Text("Patient login"),
         centerTitle: true,
       ),
       body: SafeArea(
